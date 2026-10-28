@@ -17,11 +17,11 @@ and [`execa.sync` hooks](https://github.com/dhoulb/multi-semantic-release/blob/5
 
 ## Install
 
-Consumed from a git tag, so the release pipeline always gets an immutable ref:
-
 ```sh
-pnpm --package='@scandinavianairlines/multi-semantic-release@github:scandinavianairlines/multi-semantic-release#v7.2.0' dlx multi-semantic-release
+pnpm dlx --package @scandinavianairlines/multi-semantic-release multi-semantic-release
 ```
+
+`semantic-release` is a peer dependency, so the version your pipeline installs is the version that runs.
 
 For local development:
 

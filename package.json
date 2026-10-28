@@ -21,6 +21,9 @@
 		".": "./lib/multiSemanticRelease.js",
 		"./*": "./*"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"watch": "vitest",
 		"lint": "oxlint",
