@@ -7,7 +7,7 @@ describe("tagsToVersions()", () => {
 		[[],[]],
 		[undefined, []],
 		[null, []],
-	]
+	];
 
 	cases.forEach(([tags, versions]) => {
 		it(`${tags} gives versions as ${versions}`, () => {
@@ -24,7 +24,7 @@ describe("getHighestVersion()", () => {
     [null, "1.0.0", "1.0.0"],
     ["1.0.0", undefined, "1.0.0"],
     [undefined, undefined, undefined],
-	]
+	];
 
 	cases.forEach(([version1, version2, high]) => {
 		it(`${version1}/${version2} gives highest as ${high}`, () => {
@@ -41,7 +41,7 @@ describe("getLowestVersion()", () => {
     [null, "1.0.0", "1.0.0"],
     ["1.0.0", undefined, "1.0.0"],
     [undefined, undefined, undefined],
-	]
+	];
 
 	cases.forEach(([version1, version2, low]) => {
 		it(`${version1}/${version2} gives lowest as ${low}`, () => {
@@ -58,7 +58,7 @@ describe("getLatestVersion()", () => {
     [["1.2.3-alpha.3", "1.2.0", "1.0.1", "1.0.0-alpha.1"], true, "1.2.3-alpha.3"],
     [["1.2.3-alpha.3", "1.2.3-alpha.2"], true, "1.2.3-alpha.3"],
     [[], {}, undefined]
-	]
+	];
 
 	cases.forEach(([versions, withPrerelease, latest]) => {
 		it(`${versions}/${withPrerelease} gives latest as ${latest}`, () => {

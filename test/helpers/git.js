@@ -35,8 +35,9 @@ function gitInit(branch = "master") {
 	execaSync("git", ["init"], { cwd });
 	execaSync("git", ["checkout", "-b", branch], { cwd });
 
-	// Disable GPG signing for commits.
+	// Disable GPG signing for commits and tags, otherwise the fixtures depend on the local git config.
 	gitConfig(cwd, "commit.gpgsign", false);
+	gitConfig(cwd, "tag.gpgsign", false);
 	gitUser(cwd);
 
 	// Return directory.
@@ -51,8 +52,9 @@ function gitInit(branch = "master") {
  */
 function gitInitRemote() {
 	// Init bare Git repository in a temp directory.
+	// The branch is pinned so the remote HEAD is valid regardless of the local `init.defaultBranch`.
 	const cwd = temporaryDirectory();
-	execaSync("git", ["init", "--bare"], { cwd });
+	execaSync("git", ["init", "--bare", "--initial-branch=master"], { cwd });
 
 	// Turn remote path into a file URL.
 	const url = fileUrl(cwd);
@@ -251,7 +253,9 @@ function gitTag(cwd, tagName, hash = undefined) {
 	check(hash, "hash: alphanumeric{40}?");
 
 	// Run command.
-	execaSync("git", hash ? ["tag", "-f", tagName, hash] : ["tag", tagName], { cwd });
+	execaSync("git", hash ? ["tag", "-f", tagName, hash] : ["tag", tagName], {
+		cwd,
+	});
 }
 
 /**
@@ -267,7 +271,9 @@ function gitGetTags(cwd, hash) {
 	check(hash, "hash: alphanumeric{40}");
 
 	// Run command.
-	return execaSync("git", ["describe", "--tags", "--exact-match", hash], { cwd }).stdout;
+	return execaSync("git", ["describe", "--tags", "--exact-match", hash], {
+		cwd,
+	}).stdout;
 }
 
 /**
@@ -318,7 +324,7 @@ function gitGetConfig(cwd, name) {
 	check(name, "name: string+");
 
 	// Run command.
-	execaSync("git", ["config", name], { cwd }).stdout;
+	execaSync("git", ["config", name], { cwd });
 }
 
 /**

@@ -1,0 +1,35 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"env": {
+		"es2022": true,
+		"node": true,
+		"vitest": true
+	},
+	"plugins": ["import", "node", "vitest"],
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn"
+	},
+	"rules": {
+		"eqeqeq": "error",
+		"no-alert": "error",
+		"no-caller": "error",
+		"no-eval": "error",
+		"no-extend-native": "error",
+		"no-implicit-globals": "error",
+		"no-labels": "error",
+		"no-loop-func": "error",
+		"no-new-require": "error",
+		"no-path-concat": "error",
+		"no-useless-rename": "error",
+		"no-var": "error",
+		"no-shadow": "error",
+		"prefer-const": "error",
+		"prefer-spread": "error",
+		"no-unused-vars": "off",
+		"no-underscore-dangle": "off",
+		"vitest/no-conditional-expect": "off",
+		"vitest/no-commented-out-tests": "off"
+	},
+	"ignorePatterns": ["node_modules", "coverage", "test/fixtures"]
+}

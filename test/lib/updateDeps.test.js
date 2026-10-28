@@ -1,6 +1,7 @@
-import { beforeAll, beforeEach, jest } from "@jest/globals";
-jest.unstable_mockModule("../../lib/git.js", () => ({
-	getTags: jest.fn(),
+import { beforeAll, beforeEach, vi } from "vitest";
+
+vi.mock("../../lib/git.js", () => ({
+	getTags: vi.fn(),
 }));
 let resolveReleaseType,
 	resolveNextVersion,
@@ -59,7 +60,7 @@ describe("resolveNextVersion()", () => {
 		["workspace:~1.0.0", "1.1.0", "inherit", "~1.1.0"],
 		["workspace:1.2.x", "1.3.0", "inherit", "1.3.x"],
 		["workspace:^1.0.0", "2.0.0", "inherit", "^2.0.0"],
-	]
+	];
 
 	cases.forEach(([currentVersion, nextVersion, strategy, resolvedVersion]) => {
 		it(`${currentVersion}/${nextVersion}/${strategy} gives ${resolvedVersion}`, () => {
@@ -196,10 +197,10 @@ describe("resolveReleaseType()", () => {
 			undefined,
 			undefined,
 		],
-	]
+	];
 
 	cases.forEach(([name, pkg, bumpStrategy, releaseStrategy, result]) => {
-		it(name, () => {
+		it(`${name}`, () => {
 			expect(resolveReleaseType(pkg, bumpStrategy, releaseStrategy)).toBe(result);
 		});
 	});
@@ -259,7 +260,7 @@ describe("getNextVersion()", () => {
 		["1.0.0-dev.1", undefined, "1.0.0-dev.1"],
 		["1.0.0-dev.1", "minor", "1.0.0"],
 		["1.0.0-dev.1", "patch", "1.0.0"],
-	]
+	];
 
 	cases.forEach(([lastVersion, releaseType, nextVersion, preRelease]) => {
 		it(`${lastVersion} and ${releaseType} gives ${nextVersion}`, () => {
@@ -275,7 +276,7 @@ describe("getNextVersion()", () => {
 
 describe("getNextPreVersion()", () => {
 	beforeEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 	// prettier-ignore
 	const cases = [
@@ -290,7 +291,7 @@ describe("getNextPreVersion()", () => {
 		["11.0.0", "major", "beta", [], "12.0.0-beta.1"],
 		["1.0.0", "minor", "beta", [], "1.1.0-beta.1"],
 		["1.0.0", "patch", "beta", [], "1.0.1-beta.1"],
-	]
+	];
 
 	cases.forEach(([lastVersion, releaseType, preRelease, lastTags, nextVersion]) => {
 		it(`${lastVersion} and ${releaseType} ${
@@ -387,7 +388,7 @@ describe("getPreReleaseTag()", () => {
 		["11.0.0", null],
 		["11.1.0", null],
 		["11.0.1", null],
-	]
+	];
 
 	cases.forEach(([version, preReleaseTag]) => {
 		it(`${version} gives ${preReleaseTag}`, () => {
@@ -421,7 +422,7 @@ describe("getVersionFromTag()", () => {
 		[{ name: 'abc' }, '1.0.x-rc.0', null],
 		[{ name: 'abc' }, '1.x.0-rc.0', null],
 		[{ name: 'abc' }, 'x.1.0-rc.0', null],
-	]
+	];
 
 	cases.forEach(([pkg, tag, versionFromTag]) => {
 		it(`${JSON.stringify(pkg)} pkg with tag ${tag} gives ${versionFromTag}`, () => {

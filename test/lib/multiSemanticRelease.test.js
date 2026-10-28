@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 import { createRequire } from "module";
-import { jest } from "@jest/globals";
+import { vi } from "vitest";
 
 import { WritableStreamBuffer } from "stream-buffers";
 import { addPrereleaseToPackageRootConfig, copyDirectory, createNewTestingFiles } from "../helpers/file.js";
@@ -12,7 +12,7 @@ const env = {};
 
 // Clear mocks before tests.
 beforeEach(() => {
-	jest.clearAllMocks(); // Clear all mocks.
+	vi.clearAllMocks(); // Clear all mocks.
 	// require.cache = {}; // Clear the require cache so modules are loaded fresh.
 });
 
@@ -1350,7 +1350,7 @@ describe("multiSemanticRelease()", () => {
 	});
 
 	test("Changes in child packages with sequentialPrepare", async () => {
-		const mockPrepare = jest.fn();
+		const mockPrepare = vi.fn();
 		// Create Git repo.
 		const cwd = gitInit();
 		// Initial commit.
@@ -1603,13 +1603,13 @@ describe("multiSemanticRelease()", () => {
 
 		// Make an inline plugin.
 		const plugin = {
-			verifyConditions: jest.fn(),
-			analyzeCommits: jest.fn(),
-			verifyRelease: jest.fn(),
-			generateNotes: jest.fn(),
-			prepare: jest.fn(),
-			success: jest.fn(),
-			fail: jest.fn(),
+			verifyConditions: vi.fn(),
+			analyzeCommits: vi.fn(),
+			verifyRelease: vi.fn(),
+			generateNotes: vi.fn(),
+			prepare: vi.fn(),
+			success: vi.fn(),
+			fail: vi.fn(),
 		};
 
 		// Capture output.

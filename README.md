@@ -1,24 +1,33 @@
-# @qiwi/multi-semantic-release
+# @scandinavianairlines/multi-semantic-release
+
 hacky [semantic-release](https://github.com/semantic-release/semantic-release) for monorepos
 
-[![Travis CI](https://travis-ci.com/qiwi/multi-semantic-release.svg?branch=master)](https://travis-ci.com/qiwi/multi-semantic-release)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c6ee027803a794f1d67d/maintainability)](https://codeclimate.com/github/qiwi/multi-semantic-release/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/c6ee027803a794f1d67d/test_coverage)](https://codeclimate.com/github/qiwi/multi-semantic-release/test_coverage)
-[![npm (scoped)](https://img.shields.io/npm/v/@qiwi/multi-semantic-release)](https://www.npmjs.com/package/@qiwi/multi-semantic-release)
+Maintained fork of [@qiwi/multi-semantic-release](https://github.com/qiwi/multi-semantic-release) by the Airline Digitalization
+group at Scandinavian Airlines. Upstream has not published a release since 7.1.2 (July 2024), so we carry the fixes we need here.
+
+On top of upstream `main` this fork adds:
+
+- `semantic-release` as a peer dependency (`>=25`) instead of a bundled `^21`, so the release pipeline runs the version it installs
+- `workspace:` protocol dependencies get substituted with the resolved version when a dependent is released (upstream commit, unreleased)
+- pnpm, oxlint, oxfmt and vitest for the toolchain
 
 This fork of [dhoub/multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) replaces [`setImmediate` loops](https://github.com/dhoulb/multi-semantic-release/blob/561a8e66133d422d88008c32c479d1148876aba4/lib/wait.js#L13)
-and [`execa.sync` hooks](https://github.com/dhoulb/multi-semantic-release/blob/561a8e66133d422d88008c32c479d1148876aba4/lib/execaHook.js#L5) with event-driven flow and finally makes possible to run the most release operations in parallel.  
+and [`execa.sync` hooks](https://github.com/dhoulb/multi-semantic-release/blob/561a8e66133d422d88008c32c479d1148876aba4/lib/execaHook.js#L5) with event-driven flow and finally makes possible to run the most release operations in parallel.
 🎉 🎉 🎉
-
-
-## Status
-We're still using this lib as a part of our release infra, but we're gradually migrating to [bulk-release](https://github.com/semrel-extra/zx-bulk-release).
-This means that we do not have many resources to develop this implementation actively, but we will continue to do it on a leftover basis.
 
 ## Install
 
+Consumed from a git tag, so the release pipeline always gets an immutable ref:
+
 ```sh
-yarn add @qiwi/multi-semantic-release --dev
+pnpm --package='@scandinavianairlines/multi-semantic-release@github:scandinavianairlines/multi-semantic-release#v7.2.0' dlx multi-semantic-release
+```
+
+For local development:
+
+```sh
+pnpm install
+pnpm test
 ```
 
 ## Usage
@@ -31,9 +40,9 @@ multi-semantic-release
 
 multi-semantic-release can be configured a number of ways:
 
-* A `.multi-releaserc` file, written in YAML or JSON, with optional extensions: `.yaml`/ `.yml`/ `.json`/ `.js`
-* A `multi-release.config.js` file that exports an object
-* A `multi-release` key in the workspace root package.json
+- A `.multi-releaserc` file, written in YAML or JSON, with optional extensions: `.yaml`/ `.yml`/ `.json`/ `.js`
+- A `multi-release.config.js` file that exports an object
+- A `multi-release` key in the workspace root package.json
 
 Alternatively some options may be set via CLI flags.
 
@@ -42,7 +51,7 @@ Alternatively some options may be set via CLI flags.
 ### Options
 
 | Option            | Type              | CLI Flag               | Description                                                                                                                                                                                                                                             |
-|-------------------|-------------------|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ----------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | dryRun            | `boolean`         | `--dry-run`            | Dry run mode.                                                                                                                                                                                                                                           |
 | logLevel          | `String`          | `--log-level`          | Sets the internal logger verbosity level: `error, warn, info, debug, trace`. Defaults to `info`.                                                                                                                                                        |
 | debug             | `boolean`         | `--debug`              | Output debugging information. Shortcut for `--logLevel=debug`.                                                                                                                                                                                          |
@@ -58,55 +67,50 @@ Alternatively some options may be set via CLI flags.
 
 ### `deps` Options
 
-| Option                | Type                                 | CLI Flag                       | Description                                                                                                                                                                                                                                                                                                                                             |
-|-----------------------|--------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| bump                  | `override \| satisfy \| inherit`     | `--deps.bump`                  | Define deps version updating rule. Allowed: override, satisfy, inherit. **`override` by default.**                                                                                                                                                                                                                                                      |
-| release               | `patch \| minor \| major \| inherit` | `--deps.release`               | Define release type for dependent package if any of its deps changes. Supported values: patch, minor, major, inherit. **`patch` by default**                                                                                                                                                                                                            |
-| prefix                | `'^' \| '~' \| ''`                   | `--deps.prefix`                | Optional prefix to be attached to the next version if `bump` is set to `override`. **`''` by default**.                                                                                                                                                                                                                                                 |
-| pullTagsForPrerelease | `boolean`                            | `--deps.pullTagsForPrerelease` | Optional flag to use release tags for evaluating prerelease version bumping.  Normally, this option will lead to dumping dependencies to a version past what was just released and tagged by semantic release.  Only set this option to true if you previously had a workflow that compensated for the previous bug behavior. **`'false'` by default**. |
-
+| Option                | Type                                 | CLI Flag                       | Description                                                                                                                                                                                                                                                                                                                                           |
+| --------------------- | ------------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| bump                  | `override \| satisfy \| inherit`     | `--deps.bump`                  | Define deps version updating rule. Allowed: override, satisfy, inherit. **`override` by default.**                                                                                                                                                                                                                                                    |
+| release               | `patch \| minor \| major \| inherit` | `--deps.release`               | Define release type for dependent package if any of its deps changes. Supported values: patch, minor, major, inherit. **`patch` by default**                                                                                                                                                                                                          |
+| prefix                | `'^' \| '~' \| ''`                   | `--deps.prefix`                | Optional prefix to be attached to the next version if `bump` is set to `override`. **`''` by default**.                                                                                                                                                                                                                                               |
+| pullTagsForPrerelease | `boolean`                            | `--deps.pullTagsForPrerelease` | Optional flag to use release tags for evaluating prerelease version bumping. Normally, this option will lead to dumping dependencies to a version past what was just released and tagged by semantic release. Only set this option to true if you previously had a workflow that compensated for the previous bug behavior. **`'false'` by default**. |
 
 ### Examples
 
-* Via multi-release key in the project's package.json file:
+- Via multi-release key in the project's package.json file:
 
 ```json
 {
-	"multi-release": {
-		"ignorePackages": [
-			"!packages/b/**",
-			"!packages/c/**"
-		],
-		"deps": {
-			"bump": "inherit"
-		}
-	}
+  "multi-release": {
+    "ignorePackages": ["!packages/b/**", "!packages/c/**"],
+    "deps": {
+      "bump": "inherit"
+    }
+  }
 }
 ```
 
-* Via `.multi-releaserc` file:
+- Via `.multi-releaserc` file:
 
 ```json
 {
-	"ignorePackages": [
-		"!packages/b/**",
-		"!packages/c/**"
-	],
-	"deps": {
-		"bump": "inherit"
-	}
+  "ignorePackages": ["!packages/b/**", "!packages/c/**"],
+  "deps": {
+    "bump": "inherit"
+  }
 }
 ```
 
-* Via CLI:
+- Via CLI:
 
 ```sh
 $ multi-semantic-release --ignore-packages=packages/a/**,packages/b/** --deps.bump=inherit
 ```
 
 ## Configuring Semantic-Release
+
 **MSR** requires **semrel** config to be added [in any supported format](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration) for each package or/and declared in repo root (`globalConfig` is extremely useful if all the modules have the same strategy of release).  
 NOTE config resolver joins `globalConfig` and `packageConfig` during execution.
+
 ```javascript
 // Load the package-specific options.
 const { options: pkgOptions } = await getConfig(dir);
@@ -120,26 +124,22 @@ Make sure to have a `workspaces` attribute inside your `package.json` project fi
 
 ```json
 {
-	"name": "msr-test-yarn",
-	"author": "Dave Houlbrooke <dave@shax.com",
-	"version": "0.0.0-semantically-released",
-	"private": true,
-	"license": "0BSD",
-	"engines": {
-		"node": ">=8.3"
-	},
-	"workspaces": [
-      "packages/*",
-      "!packages/b/**",
-      "!packages/c/**"
-	],
-	"release": {
-		"plugins": [
-			"@semantic-release/commit-analyzer",
-			"@semantic-release/release-notes-generator"
-		],
-		"noCi": true
-	}
+  "name": "msr-test-yarn",
+  "author": "Dave Houlbrooke <dave@shax.com",
+  "version": "0.0.0-semantically-released",
+  "private": true,
+  "license": "0BSD",
+  "engines": {
+    "node": ">=8.3"
+  },
+  "workspaces": ["packages/*", "!packages/b/**", "!packages/c/**"],
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator"
+    ],
+    "noCi": true
+  }
 }
 ```
 
@@ -152,10 +152,13 @@ $ multi-semantic-release --ignore-packages=packages/b/**,packages/c/**
 You can also combine the CLI ignore options with the `!` operator at each package inside `workspaces` attribute. Even though you can use the CLI to ignore options, you can't use it to set which packages to be released – i.e. you still need to set the `workspaces` attribute inside the `package.json`.
 
 ## Verified usage examples
+
 We use this tool to release our JS platform code inhouse (GitHub Enterprise + JB TeamCity) and for our OSS (GitHub + Travis CI). Guaranteed working configurations available in projects.
-* [qiwi/substrate](https://github.com/qiwi/substrate)
-* [qiwi/json-rpc](https://github.com/qiwi/json-rpc)
-* [qiwi/lint-config-qiwi](https://github.com/qiwi/lint-config-qiwi)
+
+- [qiwi/substrate](https://github.com/qiwi/substrate)
+- [qiwi/json-rpc](https://github.com/qiwi/json-rpc)
+- [qiwi/lint-config-qiwi](https://github.com/qiwi/lint-config-qiwi)
 
 ## License
+
 [0BSD](./LICENSE.md)
