@@ -1,16 +1,11 @@
 {
-	"name": "@qiwi/multi-semantic-release",
-	"author": "Dave Houlbrooke <dave@shax.com>",
-	"version": "7.1.2",
+	"name": "@scandinavianairlines/multi-semantic-release",
+	"version": "7.2.0",
 	"license": "0BSD",
-	"engines": {
-		"node": ">=14",
-		"yarn": ">=1.0.0"
-	},
-	"type": "module",
-	"exports": {
-		".": "./lib/multiSemanticRelease.js",
-		"./*": "./*"
+	"author": "Dave Houlbrooke <dave@shax.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/scandinavianairlines/multi-semantic-release.git"
 	},
 	"bin": {
 		"multi-semantic-release": "./bin/cli.js"
@@ -21,33 +16,23 @@
 		"lib",
 		"bin"
 	],
+	"type": "module",
+	"exports": {
+		".": "./lib/multiSemanticRelease.js",
+		"./*": "./*"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
-		"watch": "jest --watchAll",
-		"lint": "eslint ./",
-		"lint:fix": "eslint --fix ./",
-		"test": "yarn lint && yarn test:unit",
-		"test:unit": "NODE_OPTIONS=\"${NODE_OPTIONS} --experimental-vm-modules\" ./node_modules/.bin/jest --coverage",
-		"build": "echo 'There is no need for build' && exit 0",
-		"postupdate": "yarn && npx yarn-audit-fix && yarn build && yarn test",
-		"publish:beta": "npm publish --no-git-tag-version --tag beta"
-	},
-	"commitlint": {
-		"extends": [
-			"@commitlint/config-conventional"
-		]
-	},
-	"jest": {
-		"testEnvironmentOptions": {
-			"url": "http://localhost"
-		},
-		"collectCoverage": true,
-		"collectCoverageFrom": [
-			"lib/**/*.js"
-		],
-		"modulePathIgnorePatterns": [
-			"<rootDir>/test/fixtures"
-		],
-		"testTimeout": 50000
+		"watch": "vitest",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
+		"format": "oxfmt 'bin/**/*.js' 'lib/**/*.js' 'test/**/*.js' '!test/fixtures/**' '*.json'",
+		"format:check": "oxfmt --check 'bin/**/*.js' 'lib/**/*.js' 'test/**/*.js' '!test/fixtures/**' '*.json'",
+		"test": "pnpm lint && pnpm test:unit",
+		"test:unit": "vitest run --coverage",
+		"build": "echo 'There is no need for build' && exit 0"
 	},
 	"dependencies": {
 		"@semrel-extra/topo": "^1.14.0",
@@ -63,46 +48,35 @@
 		"meow": "^12.0.1",
 		"promise-events": "^0.2.4",
 		"resolve-from": "^5.0.0",
-		"semantic-release": "^21.0.5",
 		"semver": "^7.5.3",
 		"signale": "^1.4.0",
 		"stream-buffers": "^3.0.2"
 	},
 	"devDependencies": {
 		"@commitlint/config-conventional": "^17.6.6",
-		"@jest/globals": "^29.5.0",
-		"@semantic-release/changelog": "^6.0.3",
-		"@semantic-release/git": "^10.0.1",
-		"@semantic-release/github": "^9.0.3",
-		"@semantic-release/npm": "^10.0.4",
+		"@semantic-release/changelog": "^7.0.0",
+		"@semantic-release/git": "^11.0.1",
+		"@semantic-release/github": "^12.0.10",
+		"@semantic-release/npm": "^13.2.0",
+		"@vitest/coverage-v8": "^5.0.5",
 		"commitlint": "^17.6.6",
-		"eslint": "^8.43.0",
-		"eslint-config-prettier": "^8.8.0",
-		"eslint-plugin-prettier": "^4.2.1",
 		"file-url": "^4.0.0",
-		"jest": "^29.5.0",
-		"prettier": "^2.8.8",
-		"tempy": "^3.0.0"
+		"oxfmt": "^0.75.0",
+		"oxlint": "^1.90.0",
+		"semantic-release": "^25.0.9",
+		"tempy": "^3.0.0",
+		"vitest": "^5.0.5"
 	},
-	"release": {
-		"branch": "master",
-		"verifyConditions": [
-			"@semantic-release/changelog",
-			"@semantic-release/npm",
-			"@semantic-release/git"
-		],
-		"prepare": [
-			"@semantic-release/changelog",
-			"@semantic-release/npm",
-			"@semantic-release/git"
-		],
-		"publish": [
-			"@semantic-release/npm",
-			"@semantic-release/github"
+	"peerDependencies": {
+		"semantic-release": ">=25.0.0"
+	},
+	"commitlint": {
+		"extends": [
+			"@commitlint/config-conventional"
 		]
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/qiwi/multi-semantic-release.git"
-	}
+	"engines": {
+		"node": "^22.14.0 || >=24.10.0"
+	},
+	"packageManager": "pnpm@12.15.0"
 }

@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+env:
+  SEMANTIC_RELEASE_VERSION: 25.0.9
+
+jobs:
+  release:
+    name: Semantic release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Gandalf
+        uses: actions/create-github-app-token@v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ vars.GANDALF_CLIENT_ID }}
+          private-key: ${{ secrets.GANDALF_PRIVATE_KEY }}
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          # Needs to fetch historical commits in order to compare with origin/main
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.1.0
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v7.0.0
+        with:
+          cache: pnpm
+          node-version: 24
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Semantic release
+        env:
+          GIT_AUTHOR_NAME: ${{ vars.GANDALF_NAME }}
+          GIT_AUTHOR_EMAIL: ${{ vars.GANDALF_EMAIL }}
+          GIT_COMMITTER_NAME: ${{ vars.GANDALF_NAME }}
+          GIT_COMMITTER_EMAIL: ${{ vars.GANDALF_EMAIL }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          HUSKY: 0
+        run: |
+          pnpm --package=@semantic-release/commit-analyzer --package=@semantic-release/release-notes-generator --package=@semantic-release/changelog --package=@semantic-release/npm --package=@semantic-release/git --package=@semantic-release/github --package=semantic-release@${{ env.SEMANTIC_RELEASE_VERSION }} dlx semantic-release
