@@ -1650,7 +1650,7 @@ describe("multiSemanticRelease()", () => {
 		writeFileSync(`${cwd}/packages/d/ddd.txt`, "DDD");
 		gitCommitAll(cwd, "feat(ddd): Change package d");
 
-		const url = gitInitOrigin(cwd);
+		gitInitOrigin(cwd);
 		gitPush(cwd);
 
 		const success = vi.fn();
@@ -1685,7 +1685,7 @@ describe("multiSemanticRelease()", () => {
 		writeFileSync(`${cwd}/packages/d/ddd.txt`, "DDD");
 		gitCommitAll(cwd, "feat(ddd): Change package d");
 
-		const url = gitInitOrigin(cwd);
+		gitInitOrigin(cwd);
 		gitPush(cwd);
 
 		const fail = vi.fn();
