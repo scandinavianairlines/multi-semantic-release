@@ -32,6 +32,7 @@
 		"format:check": "oxfmt --check 'bin/**/*.js' 'lib/**/*.js' 'test/**/*.js' '!test/fixtures/**' '*.json'",
 		"test": "pnpm lint && pnpm test:unit",
 		"test:unit": "vitest run --coverage",
+		"prepare": "husky",
 		"build": "echo 'There is no need for build' && exit 0"
 	},
 	"dependencies": {
@@ -61,6 +62,7 @@
 		"@vitest/coverage-v8": "^5.0.5",
 		"commitlint": "^17.6.6",
 		"file-url": "^4.0.0",
+		"husky": "^9.1.7",
 		"oxfmt": "^0.75.0",
 		"oxlint": "^1.90.0",
 		"semantic-release": "^25.0.9",
