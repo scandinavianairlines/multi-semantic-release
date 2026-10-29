@@ -1,3 +1,10 @@
+## [7.2.1](https://github.com/scandinavianairlines/multi-semantic-release/compare/v7.2.0...v7.2.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* pass the package's filtered commits to the success and fail steps ([9be2a07](https://github.com/scandinavianairlines/multi-semantic-release/commit/9be2a0780d18c243b9f186d6a4e3db431b824001))
+
 ## [7.1.2](https://github.com/qiwi/multi-semantic-release/compare/v7.1.1...v7.1.2) (2024-07-28)
 
 
