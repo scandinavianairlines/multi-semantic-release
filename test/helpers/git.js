@@ -8,7 +8,6 @@ import { temporaryDirectory } from "tempy";
 import { execaSync } from "execa";
 import fileUrl from "file-url";
 import gitLogParser from "git-log-parser";
-import { array as getStreamArray } from "get-stream";
 
 /**
  * @typedef {Object} Commit
