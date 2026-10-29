@@ -1636,6 +1636,87 @@ describe("multiSemanticRelease()", () => {
 		expect(plugin.success).toBeCalledTimes(1);
 		expect(plugin.fail).not.toBeCalled();
 	});
+	test("success step receives only the commits of its own package", async () => {
+		// Create Git repo.
+		const cwd = gitInit();
+		copyDirectory(`test/fixtures/yarnWorkspaces/`, cwd);
+		gitCommitAll(cwd, "feat: Initial release");
+
+		// A commit that only touches a package that is not released.
+		writeFileSync(`${cwd}/packages/a/aaa.txt`, "AAA");
+		gitCommitAll(cwd, "feat(aaa): Change package a");
+
+		// A commit that touches the released package.
+		writeFileSync(`${cwd}/packages/d/ddd.txt`, "DDD");
+		gitCommitAll(cwd, "feat(ddd): Change package d");
+
+		gitInitOrigin(cwd);
+		gitPush(cwd);
+
+		const success = vi.fn();
+
+		const stdout = new WritableStreamBuffer();
+		const stderr = new WritableStreamBuffer();
+
+		await multiSemanticRelease(
+			[`packages/d/package.json`],
+			{
+				plugins: ["@semantic-release/release-notes-generator", { success }],
+				analyzeCommits: ["@semantic-release/commit-analyzer"],
+			},
+			{ cwd, stdout, stderr, env }
+		);
+
+		expect(success).toHaveBeenCalledTimes(1);
+		const { commits } = success.mock.calls[0][1];
+		expect(commits.map(({ subject }) => subject)).toEqual(["feat(ddd): Change package d", "feat: Initial release"]);
+	});
+	test("fail step receives only the commits of its own package", async () => {
+		// Create Git repo.
+		const cwd = gitInit();
+		copyDirectory(`test/fixtures/yarnWorkspaces/`, cwd);
+		gitCommitAll(cwd, "feat: Initial release");
+
+		// A commit that only touches a package that is not released.
+		writeFileSync(`${cwd}/packages/a/aaa.txt`, "AAA");
+		gitCommitAll(cwd, "feat(aaa): Change package a");
+
+		// A commit that touches the released package.
+		writeFileSync(`${cwd}/packages/d/ddd.txt`, "DDD");
+		gitCommitAll(cwd, "feat(ddd): Change package d");
+
+		gitInitOrigin(cwd);
+		gitPush(cwd);
+
+		const fail = vi.fn();
+		const plugin = {
+			prepare: () => {
+				// semantic-release only calls the fail step for its own errors.
+				const error = new Error("NOPE");
+				error.semanticRelease = true;
+				throw error;
+			},
+			fail,
+		};
+
+		const stdout = new WritableStreamBuffer();
+		const stderr = new WritableStreamBuffer();
+
+		await expect(
+			multiSemanticRelease(
+				[`packages/d/package.json`],
+				{
+					plugins: ["@semantic-release/release-notes-generator", plugin],
+					analyzeCommits: ["@semantic-release/commit-analyzer"],
+				},
+				{ cwd, stdout, stderr, env }
+			)
+		).rejects.toThrow("NOPE");
+
+		expect(fail).toHaveBeenCalledTimes(1);
+		const { commits } = fail.mock.calls[0][1];
+		expect(commits.map(({ subject }) => subject)).toEqual(["feat(ddd): Change package d", "feat: Initial release"]);
+	});
 	test("Bot commit release note should filetered", async () => {
 		// Create Git repo.
 		const cwd = gitInit();
