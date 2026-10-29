@@ -291,6 +291,7 @@ describe("getNextPreVersion()", () => {
 		["11.0.0", "major", "beta", [], "12.0.0-beta.1"],
 		["1.0.0", "minor", "beta", [], "1.1.0-beta.1"],
 		["1.0.0", "patch", "beta", [], "1.0.1-beta.1"],
+		["1.0.0-dev.0", "major", "dev", ["testing-package@10.2.3-dev.4"], "10.2.3-dev.5"],
 	];
 
 	cases.forEach(([lastVersion, releaseType, preRelease, lastTags, nextVersion]) => {

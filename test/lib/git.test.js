@@ -1,3 +1,4 @@
+import { execaSync } from "execa";
 import { temporaryDirectory } from "tempy";
 import { WritableStreamBuffer } from "stream-buffers";
 
@@ -89,4 +90,14 @@ test("Throws error if obtaining the tags fails", () => {
 		getTags("master", { cwd });
 	};
 	expect(t).toThrow(Error);
+});
+
+test("Tag filter only matches the given package name and prerelease", () => {
+	const cwd = gitInit("master");
+	copyDirectory(`test/fixtures/yarnWorkspaces2Packages/`, cwd);
+	gitCommitAll(cwd, "feat: init");
+	["a@1.0.0-beta.1", "ab@1.0.0-beta.2", "@s/a-utils@1.0.0-beta.3", "a@1.0.0"].forEach((t) =>
+		execaSync("git", ["tag", t], { cwd })
+	);
+	expect(getTags("master", { cwd }, ["beta", "a"])).toEqual(["a@1.0.0-beta.1"]);
 });

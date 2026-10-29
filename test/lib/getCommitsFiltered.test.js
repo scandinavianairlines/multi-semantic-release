@@ -108,6 +108,14 @@ describe("getCommitsFiltered()", () => {
 			message: expect.stringMatching("dir: Must be inside cwd"),
 		});
 	});
+	test("TypeError if dir is a sibling sharing the cwd prefix", async () => {
+		const cwd = temporaryDirectory();
+		const sibling = `${cwd}-other`;
+		mkdirSync(sibling);
+		await expect(getCommitsFiltered(cwd, sibling)).rejects.toMatchObject({
+			message: expect.stringMatching("dir: Must be inside cwd"),
+		});
+	});
 	test("TypeError if lastHead is not 40char alphanumeric Git SHA hash", async () => {
 		const cwd = temporaryDirectory();
 		mkdirSync(join(cwd, "dir"));
