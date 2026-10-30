@@ -26,10 +26,11 @@
 		"no-shadow": "error",
 		"prefer-const": "error",
 		"prefer-spread": "error",
-		"no-unused-vars": "off",
+		"no-unused-vars": "error",
 		"no-underscore-dangle": "off",
 		"vitest/no-conditional-expect": "off",
 		"vitest/no-commented-out-tests": "off"
 	},
+	"overrides": [{ "files": ["test/**"], "rules": { "no-unused-vars": "off" } }],
 	"ignorePatterns": ["node_modules", "coverage", "test/fixtures"]
 }
