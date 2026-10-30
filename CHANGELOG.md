@@ -1,3 +1,10 @@
+## [7.2.2](https://github.com/scandinavianairlines/multi-semantic-release/compare/v7.2.1...v7.2.2) (2026-10-30)
+
+
+### Bug Fixes
+
+* harden tag filtering, version parsing, dir check, debug logging ([aac9a32](https://github.com/scandinavianairlines/multi-semantic-release/commit/aac9a32e362d335e443a7c0fd2b0afa5f38b87dc))
+
 ## [7.2.1](https://github.com/scandinavianairlines/multi-semantic-release/compare/v7.2.0...v7.2.1) (2026-10-29)
 
 
